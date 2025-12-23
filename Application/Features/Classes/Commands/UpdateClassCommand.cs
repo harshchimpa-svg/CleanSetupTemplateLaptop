@@ -30,7 +30,6 @@ internal class UpdateClassCommandHandler : IRequestHandler<UpdateClassCommand, R
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
-
     public async Task<Result<Class>> Handle(UpdateClassCommand request, CancellationToken cancellationToken)
     {
 
