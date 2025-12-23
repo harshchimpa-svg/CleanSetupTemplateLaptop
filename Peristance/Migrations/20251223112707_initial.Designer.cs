@@ -12,7 +12,7 @@ using Persistence.DataContext;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251223063443_initial")]
+    [Migration("20251223112707_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -1556,7 +1556,7 @@ namespace Persistence.Migrations
                         .IsRequired();
 
                     b.HasOne("Domain.Subjects.Subject", "Subject")
-                        .WithMany()
+                        .WithMany("Lesson")
                         .HasForeignKey("SubjectId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1919,7 +1919,7 @@ namespace Persistence.Migrations
             modelBuilder.Entity("Domain.Subjects.Subject", b =>
                 {
                     b.HasOne("Domain.Entities.Classes.Class", "Class")
-                        .WithMany()
+                        .WithMany("Subject")
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1980,6 +1980,11 @@ namespace Persistence.Migrations
                     b.Navigation("UserRoles");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Classes.Class", b =>
+                {
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("Domain.Entities.Laptops.Laptop", b =>
                 {
                     b.Navigation("Ram")
@@ -2004,6 +2009,11 @@ namespace Persistence.Migrations
 
                     b.Navigation("TemplateBody")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.Subjects.Subject", b =>
+                {
+                    b.Navigation("Lesson");
                 });
 #pragma warning restore 612, 618
         }

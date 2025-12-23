@@ -25,8 +25,8 @@ internal class GetClassQueryHandler : IRequestHandler<GetClassQuery, Result<List
     public async Task<Result<List<GetClassDto>>> Handle(GetClassQuery request, CancellationToken cancellationToken)
     {
         var query = _unitOfWork.Repository<Class>().Entities.Include(s => s.Subject).ThenInclude(x=>x.Lesson)
-            .AsQueryable();
-
+            .AsQueryable(); 
+                   
         var Class = await query.ToListAsync(cancellationToken);
 
         var map = _mapper.Map<List<GetClassDto>>(Class);

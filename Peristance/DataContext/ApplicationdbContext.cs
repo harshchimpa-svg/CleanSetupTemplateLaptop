@@ -4,6 +4,7 @@ using Domain.Entities.ApplicationUsers;
 using Domain.Entities.Classes;
 using Domain.Entities.Documents;
 using Domain.Entities.Employees;
+using Domain.Entities.Houses;
 using Domain.Entities.Laptops;
 using Domain.Entities.Lessones;
 using Domain.Entities.Menus;
@@ -62,6 +63,8 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
     public DbSet<Class> classes { get; set; }
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
+    public DbSet<House> House { get; set; }
+
 
 
     public IReadOnlyCollection<int> CurrentOrgIds => _currentOrgIds;

@@ -64,4 +64,8 @@
     <None Include="Features\Locations\Commands\DeleteLocationCommand.cs" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Features\Houses\" />
+  </ItemGroup>
+
 </Project>

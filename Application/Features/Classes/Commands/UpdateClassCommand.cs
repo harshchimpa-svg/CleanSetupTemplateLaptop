@@ -1,5 +1,4 @@
-﻿using Application.Features.Locations.Commands;
-using Application.Interfaces.UnitOfWorkRepositories;
+﻿using Application.Interfaces.UnitOfWorkRepositories;
 using AutoMapper;
 using Domain.Entities.Classes;
 using MediatR;
