@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.Repositories.UserIdAndOrganizationIds;
 using Domain.Entities.ApplicationRoles;
 using Domain.Entities.ApplicationUsers;
+using Domain.Entities.Chairs;
 using Domain.Entities.Classes;
 using Domain.Entities.Documents;
 using Domain.Entities.Employees;
@@ -64,6 +65,7 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
     public DbSet<Subject> Subjects { get; set; }
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<House> House { get; set; }
+    public DbSet<Chair> Chairs { get; set; }
 
 
 
