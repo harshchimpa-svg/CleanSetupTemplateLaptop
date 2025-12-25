@@ -1,6 +1,4 @@
 ﻿using Application.Dto.Chairs;
-using Application.Dto.Locations;
-using Application.Features.Countries.Queries;
 using Application.Interfaces.UnitOfWorkRepositories;
 using AutoMapper;
 using Domain.Entities.Chairs;

@@ -10,7 +10,6 @@ using Shared;
 namespace Application.Features.Chairs.Commands;
 
 public class CreateChairCommands: IRequest<Result<string>>, ICreateMapFrom<Chair>
-
 {
     public string Name { get; set; }
     public int? HouseId { get; set; }

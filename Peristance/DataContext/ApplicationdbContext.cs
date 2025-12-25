@@ -1,19 +1,23 @@
 ﻿using Application.Interfaces.Repositories.UserIdAndOrganizationIds;
 using Domain.Entities.ApplicationRoles;
 using Domain.Entities.ApplicationUsers;
+using Domain.Entities.Beds;
 using Domain.Entities.Chairs;
 using Domain.Entities.Classes;
 using Domain.Entities.Documents;
 using Domain.Entities.Employees;
+using Domain.Entities.HouseMembers;
 using Domain.Entities.Houses;
 using Domain.Entities.Laptops;
 using Domain.Entities.Lessones;
+using Domain.Entities.Memberes;
 using Domain.Entities.Menus;
 using Domain.Entities.MenuTypes;
 using Domain.Entities.Organizations;
 using Domain.Entities.OTPs;
 using Domain.Entities.Rams;
 using Domain.Entities.Roles.RoleClaims;
+using Domain.Entities.Rooms;
 using Domain.Entities.SupportTickets;
 using Domain.Entities.SupportTickets.Documents;
 using Domain.Entities.SupportTickets.TicketConversations;
@@ -66,6 +70,10 @@ public class ApplicationDbContext : IdentityDbContext<User, Role, string, Identi
     public DbSet<Lesson> Lessons { get; set; }
     public DbSet<House> House { get; set; }
     public DbSet<Chair> Chairs { get; set; }
+    public DbSet<Member> Members { get; set; }
+    public DbSet<HouseMember> HouseMember { get; set; }
+    public DbSet<Room> Rooms { get; set; }
+    public DbSet<Bed> Beds { get; set; }
 
 
 

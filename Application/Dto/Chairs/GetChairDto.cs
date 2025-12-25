@@ -3,8 +3,6 @@ using Application.Dto.CommonDtos;
 using Application.Dto.Houses;
 using Domain.Common.Enums.ChairLegTypes;
 using Domain.Entities.Chairs;
-using Domain.Entities.Houses;
-using Domain.Entities.Laptops;
 
 namespace Application.Dto.Chairs;
 
