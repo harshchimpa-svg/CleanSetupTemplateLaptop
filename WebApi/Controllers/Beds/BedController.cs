@@ -1,10 +1,12 @@
 ﻿using Application.Features.Beds.Commands;
 using Application.Features.Beds.Queries;
+using Application.Features.Chairs.Queries;
 using Application.Features.Countries.Queries;
 using Application.Features.Locations.Commands;
 using Application.Features.Locations.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.Beds
@@ -35,10 +37,10 @@ namespace WebApi.Controllers.Beds
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBed()
+        public async Task<IActionResult> GetBed([FromQuery] GetBedQuerys query)
         {
-            var location = await _mediator.Send(new GetBedQuerys());
-            return ResponseHelper.GenerateResponse(location);
+            var location = await _mediator.Send(query);
+            return Ok(location);
         }
 
         [HttpGet("{id}")]

@@ -1,6 +1,7 @@
 ﻿using Application.Features.Locations.Commands;
 using Application.Interfaces.UnitOfWorkRepositories;
 using AutoMapper;
+using Domain.Entities.Chairs;
 using Domain.Entities.Memberes;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +34,16 @@ internal class UpdateMemberCommandHandler : IRequestHandler<UpdateMemberCommand,
 
     public async Task<Result<Member>> Handle(UpdateMemberCommand request, CancellationToken cancellationToken)
     {
+        if (request.CreateCommand.HouseId.HasValue)
+        {
+            var parent = await _unitOfWork.Repository<Chair>().GetByID(request.CreateCommand.HouseId.Value);
+
+            if (parent == null)
+            {
+                return Result<Member>.BadRequest("HouseId is not exist.");
+            }
+        }
+
 
         var Member = await _unitOfWork.Repository<Member>().Entities.FirstOrDefaultAsync(x => x.Id == request.Id);
 

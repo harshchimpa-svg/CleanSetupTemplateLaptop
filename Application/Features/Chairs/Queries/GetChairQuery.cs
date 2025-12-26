@@ -8,10 +8,13 @@ using Shared;
 
 namespace Application.Features.Chairs.Queries;
 
-public class GetChairQuery : IRequest<Result<List<GetChairDto>>>
+public class GetChairQuery : IRequest <PaginatedResult<GetChairDto>>
 {
-} 
-internal class GetChairQueryHandler : IRequestHandler<GetChairQuery, Result<List<GetChairDto>>>
+    public int? HouseId { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+}   
+internal class GetChairQueryHandler : IRequestHandler<GetChairQuery, PaginatedResult<GetChairDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -22,15 +25,28 @@ internal class GetChairQueryHandler : IRequestHandler<GetChairQuery, Result<List
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<List<GetChairDto>>> Handle(GetChairQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<GetChairDto>> Handle(GetChairQuery request, CancellationToken cancellationToken)
     {
-        var query = _unitOfWork.Repository<Chair>().Entities.Include(s => s.House)
-          .AsQueryable();
+        var queryable = _unitOfWork.Repository<Chair>().Entities.AsQueryable();
 
-        var Chair = await query.ToListAsync(cancellationToken);
 
-       var map = _mapper.Map<List<GetChairDto>>(Chair);
+        if (request.HouseId.HasValue)
+        {
+            queryable = queryable.Where(x => x.HouseId == request.HouseId);
+        }
 
-        return Result<List<GetChairDto>>.Success(map, "Chair list");
+        int count = await queryable.CountAsync();
+
+        if (request.PageNumber != 0 && request.PageSize != 0)
+        {
+            queryable = queryable
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize);
+        }
+        var query = await queryable.ToListAsync();
+
+        var map = _mapper.Map<List<GetChairDto>>(query);
+
+        return PaginatedResult<GetChairDto>.Create(map, count, request.PageNumber, request.PageSize);
     }
 }

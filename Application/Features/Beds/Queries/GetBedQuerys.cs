@@ -1,6 +1,4 @@
 ﻿using Application.Dto.Beds;
-using Application.Dto.Chairs;
-using Application.Features.Chairs.Queries;
 using Application.Interfaces.UnitOfWorkRepositories;
 using AutoMapper;
 using Domain.Entities.Beds;
@@ -10,10 +8,13 @@ using Shared;
 
 namespace Application.Features.Beds.Queries;
 
-public class GetBedQuerys : IRequest<Result<List<GetBedDto>>>
+public class GetBedQuerys : IRequest<PaginatedResult<GetBedDto>>
 {
+    public int? RoomId { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
 }
-internal class GetBedQuerysHandler : IRequestHandler<GetBedQuerys, Result<List<GetBedDto>>>
+internal class GetBedQuerysHandler : IRequestHandler<GetBedQuerys,PaginatedResult<GetBedDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,15 +25,28 @@ internal class GetBedQuerysHandler : IRequestHandler<GetBedQuerys, Result<List<G
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<List<GetBedDto>>> Handle(GetBedQuerys request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<GetBedDto>> Handle(GetBedQuerys request, CancellationToken cancellationToken)
     {
-        var query = _unitOfWork.Repository<Bed>().Entities.Include(s => s.Room)
+        var queryable = _unitOfWork.Repository<Bed>().Entities.Include(s => s.Room)
           .AsQueryable();
 
-        var Chair = await query.ToListAsync(cancellationToken);
+        if (request.RoomId.HasValue)
+        {
+            queryable = queryable.Where(x => x.RoomId == request.RoomId);
+        }
+        int count = await queryable.CountAsync();
 
-        var map = _mapper.Map<List<GetBedDto>>(Chair);
 
-        return Result<List<GetBedDto>>.Success(map, "Chair list");
+        if (request.PageNumber != 0 && request.PageSize != 0)
+        {
+            queryable = queryable
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize);
+        }
+        var query = await queryable.ToListAsync();
+
+        var map = _mapper.Map<List<GetBedDto>>(query);
+
+        return PaginatedResult < GetBedDto>.Create(map, count, request.PageNumber, request.PageSize);
     }
 }

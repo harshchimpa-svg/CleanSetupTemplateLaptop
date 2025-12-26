@@ -1,6 +1,8 @@
 ﻿using Application.Features.Chairs.Commands;
 using Application.Features.Chairs.Queries;
+using Application.Features.Houses.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.Chairs;
@@ -31,10 +33,10 @@ public class ChairController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetChair()
+    public async Task<IActionResult> GetChair([FromQuery] GetChairQuery query)
     {
-        var Chair = await _mediator.Send(new GetChairQuery());
-        return ResponseHelper.GenerateResponse(Chair);
+        var Chair = await _mediator.Send(query);
+        return Ok(Chair);
     }
 
     [HttpGet("{id}")]

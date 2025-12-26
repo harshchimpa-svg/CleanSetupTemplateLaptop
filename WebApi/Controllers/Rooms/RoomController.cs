@@ -1,6 +1,8 @@
-﻿using Application.Features.Rooms.Commands;
+﻿using Application.Features.Members.Queries;
+using Application.Features.Rooms.Commands;
 using Application.Features.Rooms.Queryes;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.Rooms;
@@ -31,10 +33,10 @@ public class RoomController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetRoom()
+    public async Task<IActionResult> GetRoom([FromQuery] GetMemberQuery query)
     {
-        var location = await _mediator.Send(new GetRoomQuery());
-        return ResponseHelper.GenerateResponse(location);
+        var location = await _mediator.Send(query);
+        return Ok(location);
     }
 
     [HttpGet("{id}")]

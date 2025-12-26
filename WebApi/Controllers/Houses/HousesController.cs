@@ -1,7 +1,5 @@
 ﻿using Application.Features.Houses.Commands;
 using Application.Features.Houses.Queries;
-using Application.Features.Laptops.Commands;
-using Application.Features.Laptops.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +15,7 @@ public class HousesController : ControllerBase
     {
         _mediator = mediator;
     }
+
     [HttpPost]
     public async Task<ActionResult> CreateHouse(CreateHouseCommands command)
     {
@@ -32,10 +31,10 @@ public class HousesController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetHouse()
+    public async Task<IActionResult> GetHouse([FromQuery] GetHouseQuery query)
     {
-        var location = await _mediator.Send(new GetHouseQuery());
-        return ResponseHelper.GenerateResponse(location);
+        var location = await _mediator.Send(query);
+        return Ok(location);
     }
 
     [HttpGet("{id}")]

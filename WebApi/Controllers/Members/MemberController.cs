@@ -1,10 +1,7 @@
-﻿using Application.Features.Countries.Queries;
-using Application.Features.Locations.Commands;
-using Application.Features.Locations.Queries;
+﻿using Application.Features.Chairs.Queries;
 using Application.Features.Members.Commands;
 using Application.Features.Members.Queries;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Controllers.Members
@@ -35,10 +32,10 @@ namespace WebApi.Controllers.Members
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetLocation()
+        public async Task<IActionResult> GetLocation([FromQuery] GetMemberQuery query)
         {
-            var location = await _mediator.Send(new GetMemberQuery());
-            return ResponseHelper.GenerateResponse(location);
+            var location = await _mediator.Send(query);
+            return Ok(location);
         }
 
         [HttpGet("{id}")]

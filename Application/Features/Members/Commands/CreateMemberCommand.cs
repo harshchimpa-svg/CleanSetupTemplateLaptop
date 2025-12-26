@@ -1,6 +1,7 @@
 ﻿using Application.Common.Mappings.Commons;
 using Application.Interfaces.UnitOfWorkRepositories;
 using AutoMapper;
+using Domain.Entities.Houses;
 using Domain.Entities.Memberes;
 using MediatR;
 using Shared;
@@ -10,6 +11,7 @@ namespace Application.Features.Members.Commands;
 public class CreateMemberCommand : IRequest<Result<string>>, ICreateMapFrom<Member>
 {
     public string Name { get; set; }
+    public int? HouseId { get; set; }
     public int PhoneNumber { get; set; }
 }
 internal class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand, Result<string>>
@@ -25,6 +27,15 @@ internal class CreateMemberCommandHandler : IRequestHandler<CreateMemberCommand,
 
     public async Task<Result<string>> Handle(CreateMemberCommand request, CancellationToken cancellationToken)
     {
+        if (request.HouseId.HasValue)
+        {
+            var houseExists = await _unitOfWork.Repository<House>().GetByID(request.HouseId.Value);
+
+            if (houseExists == null)
+            {
+                return Result<string>.BadRequest("HouseId does not exist.");
+            }
+        }
 
         var Member = _mapper.Map<Member>(request);
 

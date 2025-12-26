@@ -40,8 +40,8 @@ internal class GetDashboardQueryHandler : IRequestHandler<GetDashboardQuery, Res
             MemberCount = memberCount,
 
             AvgRoomsPerHouse = houseCount == 0 ? 0 : roomCount / houseCount,
-            AvgChairsPerRoom = houseCount == 0 ? 0 : roomCount / chairCount,
-            AvgBedsPerRoom = houseCount == 0 ? 0 : roomCount / bedCount,
+            AvgChairsPerRoom = houseCount == 0 ? 0 :   chairCount/roomCount,
+            AvgBedsPerRoom = houseCount == 0 ? 0 :   bedCount/roomCount,
             AvgMembersPerHouse = houseCount == 0 ? 0 : memberCount / houseCount
 
         };

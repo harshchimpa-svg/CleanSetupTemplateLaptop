@@ -1,18 +1,21 @@
-﻿using Application.Dto.Locations;
-using Application.Dto.Memberes;
-using Application.Features.Locations.Queries;
+﻿using Application.Dto.Memberes;
 using Application.Interfaces.UnitOfWorkRepositories;
 using AutoMapper;
 using Domain.Entities.Memberes;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Shared;
 
 namespace Application.Features.Members.Queries;
 
-public class GetMemberQuery : IRequest<Result<List<GetMemberDto>>>
+public class GetMemberQuery : IRequest<PaginatedResult<GetMemberDto>>
 {
+    public int? PhoneNumber { get; set; }
+    public string? Name { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
 }
-internal class GetMemberQueryHandler : IRequestHandler<GetMemberQuery, Result<List<GetMemberDto>>>
+internal class GetMemberQueryHandler : IRequestHandler<GetMemberQuery, PaginatedResult<GetMemberDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -23,12 +26,32 @@ internal class GetMemberQueryHandler : IRequestHandler<GetMemberQuery, Result<Li
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result<List<GetMemberDto>>> Handle(GetMemberQuery request, CancellationToken cancellationToken)
+    public async Task<PaginatedResult<GetMemberDto>> Handle(GetMemberQuery request, CancellationToken cancellationToken)
     {
-        var locations = await _unitOfWork.Repository<Member>().GetAll();
+        var queryable = _unitOfWork.Repository<Member>().Entities.AsQueryable();
 
-        var map = _mapper.Map<List<GetMemberDto>>(locations);
+        if (request.PhoneNumber.HasValue)
+        {
+            queryable = queryable.Where(x => x.PhoneNumber == request.PhoneNumber);
+        }
 
-        return Result<List<GetMemberDto>>.Success(map, "Location list");
+        if (!string.IsNullOrEmpty(request.Name))
+        {
+            queryable = queryable.Where(x => x.Name.ToLower().Contains(request.Name.ToLower()));
+        }
+
+        int count = await queryable.CountAsync();
+
+        if (request.PageNumber != 0 && request.PageSize != 0)
+        {
+            queryable = queryable
+            .Skip((request.PageNumber - 1) * request.PageSize)
+            .Take(request.PageSize);
+        }
+        var query = await queryable.ToListAsync();
+
+        var map = _mapper.Map<List<GetMemberDto>>(query);
+
+        return PaginatedResult<GetMemberDto>.Create(map, count, request.PageNumber, request.PageSize);
     }
 }
